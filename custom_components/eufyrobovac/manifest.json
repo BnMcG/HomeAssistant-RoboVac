@@ -1,0 +1,12 @@
+{
+    "domain": "robovac",
+    "name": "Eufy RoboVac",
+    "documentation": "https://github.com/bnmcg/homeassistant-robovac",
+    "dependencies": [],
+    "codeowners": [
+        "@bnmcg"
+    ],
+    "requirements": [
+        "robovac==0.0.6"
+    ]
+  }
