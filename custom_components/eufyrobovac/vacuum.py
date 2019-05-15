@@ -8,7 +8,7 @@ from homeassistant.components.vacuum import (
     PLATFORM_SCHEMA, SUPPORT_BATTERY, SUPPORT_FAN_SPEED, SUPPORT_TURN_ON,
     SUPPORT_TURN_OFF, SUPPORT_RETURN_HOME, SUPPORT_STATUS, SUPPORT_STOP, 
     SUPPORT_LOCATE, SUPPORT_CLEAN_SPOT, SUPPORT_START, VacuumDevice)
-from homeassistant.const import (CONF_IP_ADDRESS, CONF_NAME)
+from homeassistant.const import (CONF_IP_ADDRESS, CONF_NAME, CONF_USERNAME, CONF_PASSWORD)
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
 
@@ -20,8 +20,6 @@ DEFAULT_NAME = 'RoboVac'
 
 PLATFORM = 'eufyrobovac'
 
-CONF_LOCAL_CODE = 'local_code'
-
 FAN_SPEED_NORMAL = '0'
 FAN_SPEED_MAX = '1'
 FAN_SPEEDS = [FAN_SPEED_NORMAL, FAN_SPEED_MAX]
@@ -29,7 +27,8 @@ FAN_SPEEDS = [FAN_SPEED_NORMAL, FAN_SPEED_MAX]
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Required(CONF_IP_ADDRESS): cv.string,
-    vol.Required(CONF_LOCAL_CODE): cv.string,
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string,
 }, extra=vol.ALLOW_EXTRA)
 
 # Commonly supported features
@@ -39,13 +38,15 @@ SUPPORT_ROBOVAC = SUPPORT_BATTERY | SUPPORT_RETURN_HOME | SUPPORT_TURN_ON | \
 
 async def async_setup_platform(
         hass, config, async_add_entities, discovery_info=None):
-    """Set up the iRobot Roomba vacuum cleaner platform."""
-    from robovac import Robovac
+    """Set up the Eufy RoboVac vacuum cleaner platform."""
+    from robovac import Robovac, get_local_code
     if PLATFORM not in hass.data:
         hass.data[PLATFORM] = {}
 
     ip_address = config.get(CONF_IP_ADDRESS)
-    local_code = config.get(CONF_LOCAL_CODE)
+    eufy_username = config.get(CONF_USERNAME)
+    eufy_password = config.get(CONF_PASSWORD)
+    local_code = get_local_code(eufy_username, eufy_password, ip_address)
     name = config.get(CONF_NAME)
 
     eufy_robovac = Robovac(ip=ip_address, local_code=local_code)
@@ -67,7 +68,7 @@ async def async_setup_platform(
 class RobovacVacuum(VacuumDevice):
     """Representation of a Eufy RoboVac Vacuum cleaner robot."""
     def __init__(self, name, eufy_robovac):
-            """Initialize the Roomba handler."""
+            """Initialize the RoboVac handler."""
             self._available = False
             self._battery_level = None
             self._capabilities = {}

@@ -7,6 +7,6 @@
         "@bnmcg"
     ],
     "requirements": [
-        "robovac==0.0.6"
+        "robovac==0.0.8"
     ]
   }

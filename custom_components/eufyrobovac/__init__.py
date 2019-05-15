@@ -11,5 +11,6 @@ Add the following to your configuration.yaml file:
 vacuum:
   - platform: eufyrobovac
     ip_address: 192.168.0.123
-    local_code: ABCDEFGH
+    username: eufy_username
+    password: eufy_password
 """

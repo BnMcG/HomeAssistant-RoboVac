@@ -9,7 +9,8 @@ Add the following to your `configuration.yaml`:
 vacuum:
   - platform: eufyrobovac
     ip_address: 192.168.0.123
-    local_code: ABCDEFGH
+    username: your_eufy_username
+    password: your_eufy_password
 ```
 
 You may optionally provide a name for your RoboVac:
@@ -19,10 +20,11 @@ vacuum:
   - platform: eufyrobovac
     name: NotARobot
     ip_address: 192.168.0.123
-    local_code: ABCDEFGH
+    username: your_eufy_username
+    password: your_eufy_password
 ```
 
-## Local Code
-You must have the local code for your RoboVac. The easiest way to find this is to run the Eufy app while your
-phone is connected with USB debugging. You can then use logcat and grep for the localCode value. It will be a 
-16 character string.
+## Why do you need my Eufy credentials?
+Each Eufy RoboVac has its own 'local code' - this is essentially a password that the app uses to authenticate with the RoboVac.
+This code can be retrieved from the Eufy API by logging in with your username and password, and finding the device using its IP address. 
+By providing the component with your username and password, this can be done automatically.
