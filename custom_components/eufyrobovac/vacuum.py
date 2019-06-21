@@ -170,30 +170,33 @@ class RobovacVacuum(VacuumDevice):
 
     async def async_update(self):
         """Fetch state from the device."""
-        state = self.vacuum.get_status()
-        _LOGGER.debug("Got new state from the vacuum: %s", state)
-        self.vacuum_state = state
-        self._available = True
+        try:
+            state = self.vacuum.get_status()
+            _LOGGER.debug("Got new state from the vacuum: %s", state)
+            self.vacuum_state = state
+            self._available = True
 
-        possible_states = {
-            0: 'Stopped',
-            1: 'Spot cleaning',
-            2: 'Cleaning',
-            3: 'Returning to charging base',
-            4: 'Edge cleaning',
-            5: 'Cleaning single room'
-        }
+            possible_states = {
+                0: 'Stopped',
+                1: 'Spot cleaning',
+                2: 'Cleaning',
+                3: 'Returning to charging base',
+                4: 'Edge cleaning',
+                5: 'Cleaning single room'
+            }
 
-        self._battery_level = state.battery_capacity
+            self._battery_level = state.battery_capacity
 
-        if self.vacuum_state.charger_status == 1:
-            self._status = 'Charging'
-        else:
-            self._status = possible_states[self.vacuum_state.mode]
+            if self.vacuum_state.charger_status == 1:
+                self._status = 'Charging'
+            else:
+                self._status = possible_states[self.vacuum_state.mode]
 
-        self._is_on = self.vacuum_state.mode in [1,2,4,5]
+            self._is_on = self.vacuum_state.mode in [1,2,4,5]
 
-        if state.error_code != 0:
-            self._state_attrs[ATTR_ERROR] = state.error_code
+            if state.error_code != 0:
+                self._state_attrs[ATTR_ERROR] = state.error_code
 
-        self._fan_speed = state.speed
+            self._fan_speed = state.speed
+        except Exception as e:
+            _LOGGER.error("Failed to update RoboVac status: " + str(e))
