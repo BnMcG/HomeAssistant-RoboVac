@@ -56,7 +56,7 @@ async def async_setup_platform(
     try:
         with async_timeout.timeout(9):
             await hass.async_add_job(eufy_robovac.connect)
-    except asyncio.TimeoutError:
+    except (asyncio.TimeoutError, OSError):
         raise PlatformNotReady
 
     robovac_vac = RobovacVacuum(name, eufy_robovac)
