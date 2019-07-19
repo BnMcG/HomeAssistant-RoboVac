@@ -1,5 +1,5 @@
 {
-    "domain": "robovac",
+    "domain": "eufyrobovac",
     "name": "Eufy RoboVac",
     "documentation": "https://github.com/bnmcg/homeassistant-robovac",
     "dependencies": [],
